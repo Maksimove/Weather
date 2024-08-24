@@ -25,6 +25,7 @@ final class MainViewController: UIViewController {
         tableView.layer.cornerRadius = 13
         tableView.backgroundColor = setBackgroundColor()
         fetchWeather()
+
     }
     //MARK: - Private methods
     private func fetchWeather() {
@@ -39,6 +40,10 @@ final class MainViewController: UIViewController {
                 self?.weatherDetalis.isHidden.toggle()
                 self?.tableView.reloadData()
                 self?.tableView.isHidden.toggle()
+
+                if self?.tableView.refreshControl != nil {
+                    self?.tableView.refreshControl?.endRefreshing()
+                }
             case .failure(let error):
                 print(error)
             }
@@ -52,6 +57,15 @@ final class MainViewController: UIViewController {
     }
     private func setBackgroundColor() -> UIColor {
         UIColor(red: 135/255, green: 206/255, blue: 235/255, alpha: 1)
+    }
+    private func setupRefreshControll() {
+        let refreshControll = UIRefreshControl()
+        refreshControll.attributedTitle = NSAttributedString(string: "Refresh")
+        
+        let refreshAction = UIAction { [unowned self] _ in
+            fetchWeather()
+        }
+        refreshControll.addAction(refreshAction, for: .valueChanged)
     }
 }
     //MARK: - UITableViewDataSource
